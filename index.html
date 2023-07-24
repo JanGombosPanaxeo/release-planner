@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Release planner | Panaxeo</title>
+    <link href="css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="images/favicon.ico" rel="icon" type="image/x-icon">
+    <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet">
+    <script src="js/page.js" type="module"></script>
+</head>
+<body>
+<div class="container">
+    <div class="py-5 text-center">
+        <a href="https://www.panaxeo.com" target="_blank"
+           title="Panaxeo.com | Crazy good teams, crazy good digital products">
+            <img alt="" class="d-block mx-auto mb-4" height="57" src="images/panaxeo_icon_tm.png" width="72">
+        </a>
+        <h2 class="header">Release planner</h2>
+        Release plans primarily serve the Product owner. They help her/him manage key product activities such as
+        planning, prioritizing, or synchronizing releases to users, budgeting, contracting, setting expectations within
+        the organization, etc. This is a serious enough reason for the existence and pursuit of excellence regarding
+        planning releases well.
+    </div>
+
+    <div class="planner-container">
+        <div class="input-container">
+            <h4 class="panaxeo-green header">
+                Your data
+            </h4>
+
+            <div class="bs-stepper vertical ">
+                <div class="bs-stepper-header" role="tablist">
+                    <!-- your steps here -->
+                    <div class="step" data-target="#velocities">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="velocities-part" id="velocities-part-trigger">
+                            <span class="bs-stepper-circle bs-stepper-circle-custom">1</span>
+                            <span class="bs-stepper-label bs-stepper-label-custom">Velocities</span>
+                        </button>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <div class="step" data-target="#team-capacity">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="team-capacity-part" id="team-capacities-part-trigger">
+                            <span class="bs-stepper-circle bs-stepper-circle-custom">2</span>
+                            <span class="bs-stepper-label bs-stepper-label-custom">Team capacity</span>
+                        </button>
+                    </div>
+
+                </div>
+                <div class="bs-stepper-content py-2">
+                    <div id="velocities" class="content" role="tabpanel" aria-labelledby="velocities-part-trigger">
+                        <label class="form-label" for="velocities-form">
+                            Provide a list of at least 5 recent velocities in following format:
+                            <code>[velocity] [velocity] [velocity] ...</code>
+                        </label>
+
+                        <textarea class="form-control panaxeo-focus" id="velocities-form"
+                                  placeholder="5 5 16 9 15 13 21" rows="4"></textarea>
+                        <button class="mt-2 btn btn-primary panaxeo-button stepper-next" id="velocities-calc">Next</button>
+                    </div>
+
+                    <div id="team-capacity" class="content" role="tabpanel" aria-labelledby="team-capacities-part-trigger">
+                        <label class="form-label" for="team-capacity-form">
+                            If your team size has changed significantly, provide values for previous team size and planned team size in format:
+                            <code>[previous team size] [planned team size]</code>. Otherwise, leave empty and proceed.
+                        </label>
+
+                        <textarea class="form-control panaxeo-focus" id="team-capacity-form"
+                                  placeholder="8 12" rows="1"></textarea>
+                        <button class="mt-2 btn btn-primary panaxeo-button stepper-prev">Previous</button>
+                        <button class="mt-2 btn btn-primary panaxeo-button" id="forecast">Forecast</button>
+                    </div>
+
+                    <div class="mt-2" id="warning-data-fmt" style="display:none; width: fit-content;">
+                        <div class="alert alert-warning alert-dismissible d-flex align-items-center fade show m-0">
+                            <i class="bi-exclamation-triangle-fill"></i>
+                            <strong class="mx-2" id="warning-data-error">Your data format is not correct!</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="row g-5 footer">
+        <hr/>
+        <strong>
+            <a class="panaxeo-green" href="https://forms.gle/tGD8HHx1jvG4J3HG6" target="_blank">Wish-list & Feedback</a>
+        </strong>
+    </div>
+</div>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        setupDocument();
+    });
+</script>
+</body>
+</html>

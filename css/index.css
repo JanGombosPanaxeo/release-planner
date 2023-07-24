@@ -1,0 +1,88 @@
+:root{
+    --panaxeo-green: #16AB8B;
+}
+
+@font-face {
+    font-family: 'new-spirit';
+    src: url("../fonts/NewSpirit-Regular.otf") format("opentype");
+}
+
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+.footer {
+    padding-bottom: 1rem;
+}
+
+.header {
+    font-family: 'new-spirit', serif;
+}
+
+.panaxeo-green {
+    color: var(--panaxeo-green);
+}
+
+.panaxeo-button {
+    background: var(--panaxeo-green);
+    border: var(--panaxeo-green);
+}
+
+.panaxeo-button:hover {
+    background-color:  var(--panaxeo-green);
+}
+
+.panaxeo-button:focus {
+    box-shadow: 0 0 0 0.2rem #16AB8B80;
+    border: none;
+}
+
+.panaxeo-focus:focus{
+    box-shadow: 0 0 0 0.2rem #16AB8B80;
+    border: none;
+}
+
+.planner-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+input:focus::placeholder {
+    color: transparent;
+}
+
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 0.5rem;
+}
+
+/*BS-stepper customization -- START*/
+
+.bs-stepper-circle-custom {
+    color: #000000 !important;
+    background-color: #16AB8B80 !important;
+}
+
+.active .bs-stepper-circle-custom {
+    background-color: var(--panaxeo-green) !important;
+}
+
+.active .bs-stepper-label-custom {
+    color: var(--panaxeo-green) !important;
+}
+
+.content:not(.active){
+    display: none !important;
+}
+
+/*BS-stepper customization -- END*/
+
+@media only screen and (max-width: 990px) {
+    .planner-container {
+        grid-template-rows: auto;
+        grid-template-columns: none;
+    }
+}
