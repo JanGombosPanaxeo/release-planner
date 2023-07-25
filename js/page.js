@@ -13,7 +13,6 @@ import {
 
 const setupDocument = () => {
     const stepper = new Stepper(document.querySelector('.bs-stepper'));
-    stepper.to(4);
     const velocitiesForm = $("#velocities-form");
     const teamCapacityForm = $("#team-capacity-form");
     const workEstimationForm = $("#work-estimation-form");
@@ -73,6 +72,7 @@ const setupDocument = () => {
             }
         ], {
             orientation: 'auto',
+            eventsPerSlide: 4,
         });
     });
 
