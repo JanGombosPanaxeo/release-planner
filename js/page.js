@@ -73,7 +73,6 @@ const setupDocument = () => {
             }
         ], {
             orientation: 'auto',
-            eventsPerSlide: 4,
         });
     });
 
