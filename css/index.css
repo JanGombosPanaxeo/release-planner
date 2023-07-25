@@ -1,5 +1,6 @@
 :root{
     --panaxeo-green: #16AB8B;
+    --timeline-gradient-grade: 0deg;
 }
 
 @font-face {
@@ -80,9 +81,57 @@ input:focus::placeholder {
 
 /*BS-stepper customization -- END*/
 
+/*Timeline customization -- START*/
+#timeline li:first-child, #timeline li:last-child{
+    visibility: hidden;
+}
+
+#timeline li:nth-child(2){
+    color: red;
+}
+
+#timeline li:nth-child(2)::after, #timeline li:nth-child(2)::before{
+    background-color: red;
+}
+
+#timeline li:nth-child(3){
+    color: var(--panaxeo-green);
+}
+
+#timeline li:nth-child(3)::after, #timeline li:nth-child(3)::before{
+    background-color: var(--panaxeo-green);
+}
+
+#timeline ol::after{
+    z-index: -1;
+
+    /* For fallback in case of no support */
+    background: #b7b7b7;
+
+    /* For Chrome, Safari, and newer versions of Opera */
+    background: linear-gradient(var(--timeline-gradient-grade), #FF0000 0 33%, #fcc12e 33% 66%, var(--panaxeo-green) 66% 100%);
+
+    /* For older versions of Firefox */
+    background: -moz-linear-gradient(var(--timeline-gradient-grade), #FF0000 0 33%, #fcc12e 33% 66%, var(--panaxeo-green) 66% 100%);
+
+    /* For Internet Explorer 10 and older */
+    background: -ms-linear-gradient(var(--timeline-gradient-grade), #FF0000 0 33%, #fcc12e 33% 66%, var(--panaxeo-green) 66% 100%);
+
+    /* For newer versions of Opera (since version 15) */
+    background: -o-linear-gradient(var(--timeline-gradient-grade), #FF0000 0 33%, #fcc12e 33% 66%, var(--panaxeo-green) 66% 100%);
+
+    /* For newer versions of Chrome, Safari, Firefox, Opera, and IE 11+ */
+    background: -webkit-linear-gradient(var(--timeline-gradient-grade), #FF0000 0 33%, #fcc12e 33% 66%, var(--panaxeo-green) 66% 100%);
+
+}
+/*Timeline customization -- END*/
+
 @media only screen and (max-width: 990px) {
     .planner-container {
         grid-template-rows: auto;
         grid-template-columns: none;
+    }
+    :root{
+        --timeline-gradient-grade: 270deg;
     }
 }

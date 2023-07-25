@@ -9,6 +9,7 @@
     <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
+    <link href="css/jquery.roadmap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet">
     <script src="js/page.js" type="module"></script>
 </head>
@@ -31,7 +32,6 @@
             <h4 class="panaxeo-green header">
                 Your data
             </h4>
-
             <div class="bs-stepper vertical ">
                 <div class="bs-stepper-header" role="tablist">
                     <!-- your steps here -->
@@ -51,8 +51,27 @@
                         </button>
                     </div>
 
+                    <div class="line"></div>
+
+                    <div class="step" data-target="#work-estimation">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="team-capacity-part" id="work-estimation-part-trigger">
+                            <span class="bs-stepper-circle bs-stepper-circle-custom">3</span>
+                            <span class="bs-stepper-label bs-stepper-label-custom">Estimating (un)known work</span>
+                        </button>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <div class="step" data-target="#sprint-data">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="team-capacity-part" id="sprint-data-part-trigger">
+                            <span class="bs-stepper-circle bs-stepper-circle-custom">4</span>
+                            <span class="bs-stepper-label bs-stepper-label-custom">Sprint data</span>
+                        </button>
+                    </div>
+
                 </div>
                 <div class="bs-stepper-content py-2">
+                    <!-- your content here -->
                     <div id="velocities" class="content" role="tabpanel" aria-labelledby="velocities-part-trigger">
                         <label class="form-label" for="velocities-form">
                             Provide a list of at least 5 recent velocities in following format:
@@ -60,8 +79,8 @@
                         </label>
 
                         <textarea class="form-control panaxeo-focus" id="velocities-form"
-                                  placeholder="5 5 16 9 15 13 21" rows="4"></textarea>
-                        <button class="mt-2 btn btn-primary panaxeo-button stepper-next" id="velocities-calc">Next</button>
+                                  placeholder="5 5 16 9 15 13 21" rows="4">1 2 3 4 5</textarea>
+                        <button class="mt-2 btn btn-primary panaxeo-button" id="velocities-calc">Next</button>
                     </div>
 
                     <div id="team-capacity" class="content" role="tabpanel" aria-labelledby="team-capacities-part-trigger">
@@ -73,7 +92,39 @@
                         <textarea class="form-control panaxeo-focus" id="team-capacity-form"
                                   placeholder="8 12" rows="1"></textarea>
                         <button class="mt-2 btn btn-primary panaxeo-button stepper-prev">Previous</button>
+                        <button class="mt-2 btn btn-primary panaxeo-button" id="team-capacity-calc">Next</button>
+                    </div>
+
+                    <div id="work-estimation" class="content" role="tabpanel" aria-labelledby="work-estimation-part-trigger">
+                        <label class="form-label" for="work-estimation-form">
+                            How much of the final solution do you think we see in the backlog? We think the Product Backlog contains X%-Y% of the actual work we’ll end up doing. Provide values for X and Y in format:
+                            <code>[X] [Y]</code>.
+                        </label>
+
+                        <textarea class="form-control panaxeo-focus" id="work-estimation-form"
+                                  placeholder="80 90" rows="1">50 80</textarea>
+                        <button class="mt-2 btn btn-primary panaxeo-button stepper-prev">Previous</button>
+                        <button class="mt-2 btn btn-primary panaxeo-button" id="work-estimation-calc">Next</button>
+                    </div>
+
+                    <div id="sprint-data" class="content" role="tabpanel" aria-labelledby="sprint-data-part-trigger">
+                    <form id="sprint-data-form">
+                        <div class="form-group">
+                            <label for="plannedStoryPoints">Known (planned) story points</label>
+                            <input type="number" value="2" class="form-control panaxeo-focus" id="plannedStoryPoints" aria-describedby="plannedStoryPointsHelp" placeholder="e.g. 120">
+                            <small id="plannedStoryPointsHelp" class="form-text text-muted">Sum the story points of all known PBIs planned.</small>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="sprintLength">Sprint Length (calendar days)</label>
+                            <input type="number" class="form-control panaxeo-focus" id="sprintLength" placeholder="e.g. 5" value="2">
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="sprintStart">Sprint start</label>s
+                            <input type="date" class="form-control panaxeo-focus" id="sprintStart"  >
+                        </div>
+                        <button class="mt-2 btn btn-primary panaxeo-button stepper-prev">Previous</button>
                         <button class="mt-2 btn btn-primary panaxeo-button" id="forecast">Forecast</button>
+                    </form>
                     </div>
 
                     <div class="mt-2" id="warning-data-fmt" style="display:none; width: fit-content;">
@@ -84,9 +135,8 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
+        <div id="timeline"></div>
     </div>
     <div class="row g-5 footer">
         <hr/>
@@ -100,6 +150,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
+<script src="js/jquery.roadmap.min.js" type="text/javascript"></script>
 <script>
     $(document).ready(function () {
         setupDocument();

@@ -3,25 +3,50 @@ import {
     parseVelocitiesFormInput,
     refreshForm,
     errorObj,
-    parseTeamCapacityFormInput, calcTeamCapacity
+    parseTeamCapacityFormInput,
+    calcTeamCapacity,
+    calcWorkEstimation,
+    parseWorkEstimationFormInput,
+    forecast,
+    parseSprintDataFormInput
 } from "./calculations.js";
 
 const setupDocument = () => {
     const stepper = new Stepper(document.querySelector('.bs-stepper'));
+    stepper.to(4);
     const velocitiesForm = $("#velocities-form");
     const teamCapacityForm = $("#team-capacity-form");
-    // $(".stepper-next").click(function(){
-    //     stepper.next();
-    // });
+    const workEstimationForm = $("#work-estimation-form");
+    const sprintDataForm = $("#sprint-data-form");
 
     $(".stepper-prev").click(function () {
         stepper.previous();
     });
 
     $("#velocities-calc").click(function () {
-        const input = $("#velocities-form").val();
+        const input = velocitiesForm.val();
         calcVelocities(input);
-        if(errorObj.errorHasOccurred){
+        if (errorObj.errorHasOccurred) {
+            alert(errorObj.errorMessage);
+            return;
+        }
+        stepper.next();
+    });
+
+    $("#team-capacity-calc").click(function () {
+        const input = teamCapacityForm.val();
+        calcTeamCapacity(input);
+        if (errorObj.errorHasOccurred) {
+            alert(errorObj.errorMessage);
+            return;
+        }
+        stepper.next();
+    });
+
+    $("#work-estimation-calc").click(function () {
+        const input = workEstimationForm.val();
+        calcWorkEstimation(input);
+        if (errorObj.errorHasOccurred) {
             alert(errorObj.errorMessage);
             return;
         }
@@ -29,12 +54,27 @@ const setupDocument = () => {
     });
 
     $("#forecast").click(function () {
-        const input = $("#team-capacity-form").val();
-        calcTeamCapacity(input);
-        if(errorObj.errorHasOccurred){
+        const {dateMin, dateMax} = forecast(sprintDataForm) || {};
+        if (errorObj.errorHasOccurred) {
             alert(errorObj.errorMessage);
             return;
         }
+        $('#timeline').roadmap([
+            {
+                //empty on purpose
+            }, {
+                date: `${dateMin.getDate()}.${dateMin.getMonth()}.${dateMin.getFullYear()}`,
+                content: 'Won’t finish'
+            }, {
+                date: `${dateMax.getDate()}.${dateMax.getMonth()}.${dateMax.getFullYear()}`,
+                content: 'Will finish',
+            }, {
+                //empty on purpose
+            }
+        ], {
+            orientation: 'auto',
+            eventsPerSlide: 4,
+        });
     });
 
     const updateVelocitiesForm = () => {
@@ -47,11 +87,31 @@ const setupDocument = () => {
         refreshForm();
     }
 
+    const updateWorkEstimationForm = () => {
+        parseWorkEstimationFormInput(workEstimationForm.val());
+        refreshForm();
+    }
+
+    const updateSprintDataForm = () => {
+        parseSprintDataFormInput(sprintDataForm);
+        refreshForm();
+    }
+
     velocitiesForm.focusout(updateVelocitiesForm);
-    velocitiesForm.on("change paste keyup", updateVelocitiesForm );
+    velocitiesForm.on("change paste keyup", updateVelocitiesForm);
 
     teamCapacityForm.focusout(updateTeamCapacityForm);
     teamCapacityForm.on("change paste keyup", updateTeamCapacityForm);
+
+    workEstimationForm.focusout(updateWorkEstimationForm);
+    workEstimationForm.on("change paste keyup", updateWorkEstimationForm);
+
+    sprintDataForm.submit((event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    })
+    sprintDataForm.focusout(updateSprintDataForm);
+    sprintDataForm.on("change paste keyup", updateSprintDataForm);
 }
 
 window.setupDocument = setupDocument;
