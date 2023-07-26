@@ -1,9 +1,9 @@
 import {addDaysToDate, isValidDateInFuture} from "./utils.js";
 
 const providedValues = {
-    velocities: [1,2,3,4,5],
+    velocities: [1, 2, 3, 4, 5],
     teamCapacity: [],
-    workEstimation: [50,80]
+    workEstimation: [50, 80]
 }
 
 export const errorObj = {
@@ -48,37 +48,52 @@ const parseInputToIntArray = (strInput) => {
     return inputArray;
 }
 
-export const parseVelocitiesFormInput = (strInput) => {
-    const intValues = parseInputToIntArray(strInput);
+const parseTextareaRows = (strInput) => {
+    resetErrorObj();
+    const inputText = strInput.trim();
+    const rows = inputText.split("\n");
+    const parsedValues = [];
+
+    for (const [index, row] of rows.entries()) {
+        const values = row.trim().split(/\s|,\s*/);
+        console.log(values);
+        if (values.length === 2) {
+            const num1 = parseInt(values[0], 10);
+            const num2 = parseInt(values[1], 10);
+
+            // Check if both values are valid integers
+            if (!isNaN(num1) && !isNaN(num2)) {
+                parsedValues.push([num1, num2]); // Store the parsed integers as a pair
+            } else {
+                setError('Unable to parse value at row ' + (index + 1) + ' :(');
+                return;
+            }
+        } else {
+            setError('Each row must contain exactly 2 values');
+            return;
+        }
+    }
+    return parsedValues;
+}
+
+export const parseVelocitiesPart = (strInput, includeKnownCapacities) => {
+    const values = includeKnownCapacities ? parseTextareaRows(strInput) : parseInputToIntArray(strInput);
+    const newTeamCapacityInput = $("#new-team-capacity-input");
     if (errorObj.errorHasOccurred) {
         return;
     }
-    if (intValues.length < 5) {
-        setError("You need to provide at least 5 values");
+    if (values.length < 5) {
+        setError("You need to provide values for at least 5 sprints");
         return;
-    } else if (intValues.length > 1000) {
-        setError("Maximum number of values is 1000");
+    } else if (values.length > 1000) {
+        setError("Maximum number of sprints is 1000");
+        return;
+    } else if (includeKnownCapacities && newTeamCapacityInput.val() < 1) {
+        setError("New team capacity value must be an positive integer");
         return;
     }
-    return intValues;
+    return includeKnownCapacities ? values.map(tuple => (tuple[0] / tuple[1]) * newTeamCapacityInput.val()) : values;
 }
-
-export const parseTeamCapacityFormInput = (strInput) => {
-    const intValues = parseInputToIntArray(strInput);
-    if (errorObj.errorHasOccurred) {
-        return;
-    }
-    if (intValues.length !== 2 && intValues.length !== 0) {
-        setError("You need to provide exactly 0 or 2 values");
-        return;
-    }
-    if (intValues.some((elem) => elem < 1 || elem > 9999)) {
-        setError("Each value must be an integer from interval [1,9999]");
-        return;
-    }
-    return intValues;
-}
-
 export const parseWorkEstimationFormInput = (strInput) => {
     const intValues = parseInputToIntArray(strInput);
     if (errorObj.errorHasOccurred) {
@@ -113,22 +128,19 @@ export const parseSprintDataFormInput = (sprintDataForm) => {
     return {plannedStoryPoints, sprintLength, sprintStart};
 }
 
-export const calcVelocities = (strInput) => {
-    const velocities = parseVelocitiesFormInput(strInput);
+export const calcVelocities = (strInput, includeKnownCapacities) => {
+    const velocities = parseVelocitiesPart(strInput, includeKnownCapacities);
     if (errorObj.errorHasOccurred) return;
     providedValues.velocities = velocities;
-}
-
-export const calcTeamCapacity = (strInput) => {
-    const teamCapacity = parseTeamCapacityFormInput(strInput);
-    if (errorObj.errorHasOccurred) return;
-    providedValues.teamCapacity = teamCapacity;
 }
 
 export const calcWorkEstimation = (strInput) => {
     const workEstimation = parseWorkEstimationFormInput(strInput);
     if (errorObj.errorHasOccurred) return;
+    //Divide work estimation by 10 as provided values are percentages in range 1-100
+    workEstimation.forEach(workEst => workEst / 10);
     providedValues.workEstimation = workEstimation;
+
 }
 
 export const forecast = (sprintDataForm) => {
@@ -138,10 +150,10 @@ export const forecast = (sprintDataForm) => {
     let Vmin, Vmax;
     let sprintsMin, sprintsMax;
     let [Emin, Emax] = providedValues.workEstimation;
-    let [SPmin, SPmax] = [plannedStoryPoints / Emin, plannedStoryPoints / Emax];
+
+    //Calculate <Vmin, Vmax>
     let removeHighest = true;
     velocities.sort();
-
     while (velocities.length > 6) {
         if (removeHighest) velocities.pop();
         else velocities.shift();
@@ -149,12 +161,11 @@ export const forecast = (sprintDataForm) => {
     }
     Vmin = velocities[0];
     Vmax = velocities[velocities.length - 1]
+
+    //Calculate duration range
+    let [SPmin, SPmax] = [plannedStoryPoints / Emin, plannedStoryPoints / Emax];
     sprintsMin = SPmin / Vmax;
     sprintsMax = SPmax / Vmin;
-    console.log("spmin", SPmin)
-    console.log("vmax", Vmax)
-    console.log("spmax", sprintsMax)
-    console.log("splength", sprintLength)
     const dateMin = addDaysToDate(new Date(sprintStart), Math.round(sprintsMin * sprintLength));
     const dateMax = addDaysToDate(new Date(sprintStart), Math.round(sprintsMax * sprintLength));
     return {dateMin, dateMax};

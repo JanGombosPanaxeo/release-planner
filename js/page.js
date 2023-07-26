@@ -1,40 +1,42 @@
 import {
     calcVelocities,
-    parseVelocitiesFormInput,
     refreshForm,
     errorObj,
-    parseTeamCapacityFormInput,
-    calcTeamCapacity,
-    calcWorkEstimation,
     parseWorkEstimationFormInput,
     forecast,
-    parseSprintDataFormInput
+    parseSprintDataFormInput, parseVelocitiesPart, calcWorkEstimation
 } from "./calculations.js";
 
 const setupDocument = () => {
     const stepper = new Stepper(document.querySelector('.bs-stepper'));
     const velocitiesForm = $("#velocities-form");
-    const teamCapacityForm = $("#team-capacity-form");
-    const workEstimationForm = $("#work-estimation-form");
+    const velocitiesTextarea = $('#velocities-textarea');
+    const workEstimationTextarea = $("#work-estimation-textarea");
     const sprintDataForm = $("#sprint-data-form");
+    const knownCapacitiesCheckbox = $("#known-capacities-checkbox");
+
+    knownCapacitiesCheckbox.change(function (event) {
+        const newTeamCapacityWrapper = $("#new-team-capacity-wrapper");
+        const uncheckedLabel = $("#capacities-unchecked-label");
+        const checkedLabel = $("#capacities-checked-label");
+        if (event.currentTarget.checked) {
+            checkedLabel.show();
+            newTeamCapacityWrapper.show();
+            uncheckedLabel.hide();
+        } else {
+            checkedLabel.hide();
+            newTeamCapacityWrapper.hide();
+            uncheckedLabel.show();
+        }
+    });
 
     $(".stepper-prev").click(function () {
         stepper.previous();
     });
 
     $("#velocities-calc").click(function () {
-        const input = velocitiesForm.val();
-        calcVelocities(input);
-        if (errorObj.errorHasOccurred) {
-            alert(errorObj.errorMessage);
-            return;
-        }
-        stepper.next();
-    });
-
-    $("#team-capacity-calc").click(function () {
-        const input = teamCapacityForm.val();
-        calcTeamCapacity(input);
+        const input = velocitiesTextarea.val();
+        calcVelocities(input, knownCapacitiesCheckbox.is(':checked'));
         if (errorObj.errorHasOccurred) {
             alert(errorObj.errorMessage);
             return;
@@ -43,7 +45,7 @@ const setupDocument = () => {
     });
 
     $("#work-estimation-calc").click(function () {
-        const input = workEstimationForm.val();
+        const input = workEstimationTextarea.val();
         calcWorkEstimation(input);
         if (errorObj.errorHasOccurred) {
             alert(errorObj.errorMessage);
@@ -76,41 +78,37 @@ const setupDocument = () => {
         });
     });
 
-    const updateVelocitiesForm = () => {
-        parseVelocitiesFormInput(velocitiesForm.val());
+    const updateVelocitiesPart = () => {
+        parseVelocitiesPart(velocitiesTextarea.val(), knownCapacitiesCheckbox.is(':checked'));
         refreshForm();
     }
 
-    const updateTeamCapacityForm = () => {
-        parseTeamCapacityFormInput(teamCapacityForm.val());
+    const updateWorkEstimationPart = () => {
+        parseWorkEstimationFormInput(workEstimationTextarea.val());
         refreshForm();
     }
 
-    const updateWorkEstimationForm = () => {
-        parseWorkEstimationFormInput(workEstimationForm.val());
-        refreshForm();
-    }
-
-    const updateSprintDataForm = () => {
+    const updateSprintDataPart = () => {
         parseSprintDataFormInput(sprintDataForm);
         refreshForm();
     }
-
-    velocitiesForm.focusout(updateVelocitiesForm);
-    velocitiesForm.on("change paste keyup", updateVelocitiesForm);
-
-    teamCapacityForm.focusout(updateTeamCapacityForm);
-    teamCapacityForm.on("change paste keyup", updateTeamCapacityForm);
-
-    workEstimationForm.focusout(updateWorkEstimationForm);
-    workEstimationForm.on("change paste keyup", updateWorkEstimationForm);
 
     sprintDataForm.submit((event) => {
         event.preventDefault();
         event.stopPropagation();
     })
-    sprintDataForm.focusout(updateSprintDataForm);
-    sprintDataForm.on("change paste keyup", updateSprintDataForm);
+    velocitiesForm.focusout(updateVelocitiesPart);
+    velocitiesForm.on("change paste keyup", updateVelocitiesPart);
+
+    workEstimationTextarea.focusout(updateWorkEstimationPart);
+    workEstimationTextarea.on("change paste keyup", updateWorkEstimationPart);
+
+    sprintDataForm.submit((event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    })
+    sprintDataForm.focusout(updateSprintDataPart);
+    sprintDataForm.on("change paste keyup", updateSprintDataPart);
 }
 
 window.setupDocument = setupDocument;
