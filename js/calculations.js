@@ -11,7 +11,7 @@ export const errorObj = {
     errorMessage: null
 }
 
-const resetProvidedValues = () => {
+export const resetProvidedValues = () => {
     providedValues.velocities = [];
     providedValues.teamCapacity = [];
     providedValues.workEstimation = [];

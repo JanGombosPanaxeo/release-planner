@@ -73,9 +73,14 @@ input:focus::placeholder {
 
 .bs-stepper-label-custom{
     display: inline-block;
-    max-width: 100px;
+    width: 100px;
     white-space: normal;
     word-wrap: break-word;
+}
+
+.step-trigger-custom{
+    display: flex;
+    flex-direction: column;
 }
 
 .active .bs-stepper-label-custom {
@@ -129,7 +134,13 @@ input:focus::placeholder {
 
     /* For newer versions of Chrome, Safari, Firefox, Opera, and IE 11+ */
     background: -webkit-linear-gradient(var(--timeline-gradient-grade), #FF0000 0 33%, #fcc12e 33% 66%, var(--panaxeo-green) 66% 100%);
+}
 
+#timeline {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: end;
+    justify-content: center;
 }
 /*Timeline customization -- END*/
 

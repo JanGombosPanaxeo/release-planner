@@ -36,7 +36,7 @@
                 <div class="bs-stepper-header" role="tablist">
                     <!-- your steps here -->
                     <div class="step" data-target="#velocities">
-                        <button aria-controls="velocities-part" class="step-trigger" id="velocities-part-trigger"
+                        <button aria-controls="velocities-part" class="step-trigger step-trigger-custom" id="velocities-part-trigger"
                                 role="tab"
                                 type="button">
                             <span class="bs-stepper-circle bs-stepper-circle-custom">1</span>
@@ -47,7 +47,7 @@
                     <div class="line"></div>
 
                     <div class="step" data-target="#work-estimation">
-                        <button aria-controls="team-capacity-part" class="step-trigger"
+                        <button aria-controls="team-capacity-part" class="step-trigger step-trigger-custom"
                                 id="work-estimation-part-trigger" role="tab"
                                 type="button">
                             <span class="bs-stepper-circle bs-stepper-circle-custom">2</span>
@@ -58,7 +58,7 @@
                     <div class="line"></div>
 
                     <div class="step" data-target="#sprint-data">
-                        <button aria-controls="team-capacity-part" class="step-trigger" id="sprint-data-part-trigger"
+                        <button aria-controls="team-capacity-part" class="step-trigger step-trigger-custom" id="sprint-data-part-trigger"
                                 role="tab"
                                 type="button">
                             <span class="bs-stepper-circle bs-stepper-circle-custom">3</span>
@@ -151,7 +151,9 @@
                 </div>
             </div>
         </div>
-        <div id="timeline"></div>
+        <div id="timeline">
+            <button class="btn btn-primary panaxeo-button" id="reset-timeline" style="display: none;">Reset</button>
+        </div>
     </div>
     <div class="row g-5 footer">
         <hr/>

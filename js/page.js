@@ -4,7 +4,7 @@ import {
     errorObj,
     parseWorkEstimationPart,
     forecast,
-    ParseSprintDataPart, parseVelocitiesPart, calcWorkEstimation, resetErrorObj
+    ParseSprintDataPart, parseVelocitiesPart, calcWorkEstimation, resetErrorObj, resetProvidedValues
 } from "./calculations.js";
 
 const setupDocument = () => {
@@ -14,6 +14,18 @@ const setupDocument = () => {
     const workEstimationTextarea = $("#work-estimation-textarea");
     const sprintDataForm = $("#sprint-data-form");
     const knownCapacitiesCheckbox = $("#known-capacities-checkbox");
+    const resetTimelineButton = $("#reset-timeline");
+
+    resetTimelineButton.click((_) => {
+        //velocitiesForm.reset();
+        knownCapacitiesCheckbox.reset();
+        workEstimationTextarea.reset();
+        //sprintDataForm.reset();
+        stepper.to(1);
+        $('#timeline').hide();
+        resetProvidedValues();
+        resetTimelineButton.hide();
+    })
 
     knownCapacitiesCheckbox.change(function (event) {
         const newTeamCapacityWrapper = $("#new-team-capacity-wrapper");
@@ -78,6 +90,7 @@ const setupDocument = () => {
             orientation: 'auto',
             eventsPerSlide: 4,
         });
+        resetTimelineButton.show();
     });
 
     const updateVelocitiesPart = () => {
