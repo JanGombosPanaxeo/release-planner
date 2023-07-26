@@ -71,6 +71,13 @@ input:focus::placeholder {
     background-color: var(--panaxeo-green) !important;
 }
 
+.bs-stepper-label-custom{
+    display: inline-block;
+    max-width: 100px;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
 .active .bs-stepper-label-custom {
     color: var(--panaxeo-green) !important;
 }

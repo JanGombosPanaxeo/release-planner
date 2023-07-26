@@ -2,9 +2,9 @@ import {
     calcVelocities,
     refreshForm,
     errorObj,
-    parseWorkEstimationFormInput,
+    parseWorkEstimationPart,
     forecast,
-    parseSprintDataFormInput, parseVelocitiesPart, calcWorkEstimation
+    ParseSprintDataPart, parseVelocitiesPart, calcWorkEstimation, resetErrorObj
 } from "./calculations.js";
 
 const setupDocument = () => {
@@ -31,6 +31,8 @@ const setupDocument = () => {
     });
 
     $(".stepper-prev").click(function () {
+        resetErrorObj();
+        refreshForm();
         stepper.previous();
     });
 
@@ -84,12 +86,12 @@ const setupDocument = () => {
     }
 
     const updateWorkEstimationPart = () => {
-        parseWorkEstimationFormInput(workEstimationTextarea.val());
+        parseWorkEstimationPart(workEstimationTextarea.val());
         refreshForm();
     }
 
     const updateSprintDataPart = () => {
-        parseSprintDataFormInput(sprintDataForm);
+        ParseSprintDataPart(sprintDataForm);
         refreshForm();
     }
 
@@ -97,17 +99,15 @@ const setupDocument = () => {
         event.preventDefault();
         event.stopPropagation();
     })
-    velocitiesForm.focusout(updateVelocitiesPart);
+
     velocitiesForm.on("change paste keyup", updateVelocitiesPart);
 
-    workEstimationTextarea.focusout(updateWorkEstimationPart);
     workEstimationTextarea.on("change paste keyup", updateWorkEstimationPart);
 
     sprintDataForm.submit((event) => {
         event.preventDefault();
         event.stopPropagation();
     })
-    sprintDataForm.focusout(updateSprintDataPart);
     sprintDataForm.on("change paste keyup", updateSprintDataPart);
 }
 

@@ -17,7 +17,7 @@ const resetProvidedValues = () => {
     providedValues.workEstimation = [];
 }
 
-const resetErrorObj = () => {
+export const resetErrorObj = () => {
     errorObj.errorHasOccurred = false;
     errorObj.errorMessage = null;
 }
@@ -56,7 +56,6 @@ const parseTextareaRows = (strInput) => {
 
     for (const [index, row] of rows.entries()) {
         const values = row.trim().split(/\s|,\s*/);
-        console.log(values);
         if (values.length === 2) {
             const num1 = parseInt(values[0], 10);
             const num2 = parseInt(values[1], 10);
@@ -94,7 +93,7 @@ export const parseVelocitiesPart = (strInput, includeKnownCapacities) => {
     }
     return includeKnownCapacities ? values.map(tuple => (tuple[0] / tuple[1]) * newTeamCapacityInput.val()) : values;
 }
-export const parseWorkEstimationFormInput = (strInput) => {
+export const parseWorkEstimationPart = (strInput) => {
     const intValues = parseInputToIntArray(strInput);
     if (errorObj.errorHasOccurred) {
         return;
@@ -110,7 +109,7 @@ export const parseWorkEstimationFormInput = (strInput) => {
     return intValues;
 }
 
-export const parseSprintDataFormInput = (sprintDataForm) => {
+export const ParseSprintDataPart = (sprintDataForm) => {
     resetErrorObj();
     const plannedStoryPoints = sprintDataForm.find('#plannedStoryPoints').val();
     const sprintLength = sprintDataForm.find('#sprintLength').val();
@@ -135,7 +134,7 @@ export const calcVelocities = (strInput, includeKnownCapacities) => {
 }
 
 export const calcWorkEstimation = (strInput) => {
-    const workEstimation = parseWorkEstimationFormInput(strInput);
+    const workEstimation = parseWorkEstimationPart(strInput);
     if (errorObj.errorHasOccurred) return;
     //Divide work estimation by 10 as provided values are percentages in range 1-100
     workEstimation.forEach(workEst => workEst / 10);
@@ -144,7 +143,7 @@ export const calcWorkEstimation = (strInput) => {
 }
 
 export const forecast = (sprintDataForm) => {
-    const {plannedStoryPoints, sprintLength, sprintStart} = parseSprintDataFormInput(sprintDataForm) || {};
+    const {plannedStoryPoints, sprintLength, sprintStart} = ParseSprintDataPart(sprintDataForm) || {};
     if (errorObj.errorHasOccurred) return;
     let velocities = [...providedValues.velocities];
     let Vmin, Vmax;
