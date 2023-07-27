@@ -77,7 +77,7 @@ const setupDocument = () => {
             alert(errorObj.errorMessage);
             return;
         }
-        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateOptions = {year: 'numeric', month: 'long', day: 'numeric'};
         const dateFormatter = new Intl.DateTimeFormat('en-US', dateOptions);
         timeline.roadmap([
             {
@@ -86,6 +86,9 @@ const setupDocument = () => {
                 date: `${dateFormatter.format(dateMin)}`,
                 content: 'Won’t finish'
             }, {
+                date: 'Dates in between',
+                content: 'Might finish',
+            }, {
                 date: `${dateFormatter.format(dateMax)}`,
                 content: 'Will finish',
             }, {
@@ -93,7 +96,7 @@ const setupDocument = () => {
             }
         ], {
             orientation: 'auto',
-            eventsPerSlide: 4,
+            eventsPerSlide: 5,
         });
         timeline.show();
         resetTimelineButton.show();
