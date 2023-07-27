@@ -22,9 +22,11 @@ const setupDocument = () => {
         workEstimationTextarea.val('');
         sprintDataForm.trigger('reset');
         knownCapacitiesCheckbox.trigger('change');
+        resetProvidedValues();
+        resetErrorObj();
+        refreshForm();
         stepper.to(0);
         timeline.hide();
-        resetProvidedValues();
         resetTimelineButton.hide();
     })
 
@@ -112,11 +114,10 @@ const setupDocument = () => {
         refreshForm();
     }
 
-    sprintDataForm.submit((event) => {
+    velocitiesForm.submit((event) => {
         event.preventDefault();
         event.stopPropagation();
     })
-
     velocitiesForm.on("change paste keyup", updateVelocitiesPart);
 
     workEstimationTextarea.on("change paste keyup", updateWorkEstimationPart);
