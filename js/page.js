@@ -15,14 +15,15 @@ const setupDocument = () => {
     const sprintDataForm = $("#sprint-data-form");
     const knownCapacitiesCheckbox = $("#known-capacities-checkbox");
     const resetTimelineButton = $("#reset-timeline");
+    const timeline = $('#timeline');
 
     resetTimelineButton.click((_) => {
-        //velocitiesForm.reset();
-        knownCapacitiesCheckbox.reset();
-        workEstimationTextarea.reset();
-        //sprintDataForm.reset();
-        stepper.to(1);
-        $('#timeline').hide();
+        velocitiesForm.trigger('reset');
+        workEstimationTextarea.val('');
+        sprintDataForm.trigger('reset');
+        knownCapacitiesCheckbox.trigger('change');
+        stepper.to(0);
+        timeline.hide();
         resetProvidedValues();
         resetTimelineButton.hide();
     })
@@ -74,7 +75,7 @@ const setupDocument = () => {
             alert(errorObj.errorMessage);
             return;
         }
-        $('#timeline').roadmap([
+        timeline.roadmap([
             {
                 //empty on purpose
             }, {
@@ -90,6 +91,7 @@ const setupDocument = () => {
             orientation: 'auto',
             eventsPerSlide: 4,
         });
+        timeline.show();
         resetTimelineButton.show();
     });
 
