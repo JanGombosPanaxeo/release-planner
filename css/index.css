@@ -12,8 +12,8 @@
     font-family: 'Inter', sans-serif;
 }
 
-.footer {
-    padding-bottom: 1rem;
+.footer a{
+    text-decoration: none;
 }
 
 .header {
