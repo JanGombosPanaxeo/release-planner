@@ -32,7 +32,7 @@
             <h4 class="panaxeo-green header">
                 Your data
             </h4>
-            <div class="bs-stepper vertical ">
+            <div class="bs-stepper vertical w-100">
                 <div class="bs-stepper-header" role="tablist">
                     <!-- your steps here -->
                     <div class="step" data-target="#velocities">
@@ -69,7 +69,7 @@
                     </div>
 
                 </div>
-                <div class="bs-stepper-content py-2">
+                <div class="bs-stepper-content py-2 w-100">
                     <!-- your content here -->
                     <div aria-labelledby="velocities-part-trigger" class="content" id="velocities" role="tabpanel">
                         <form id="velocities-form">
@@ -85,7 +85,7 @@
                             </label>
 
                             <textarea class="form-control panaxeo-focus" id="velocities-textarea"
-                                      placeholder="5 5 16 9 15 13 21" rows="4">1 2 3 4 5</textarea>
+                                      placeholder="15 8" rows="4"></textarea>
                             <div class="form-group mt-2" id="new-team-capacity-wrapper" style="display: none;">
                                 <label for="new-team-capacity-input">Capacity</label>
                                 <input aria-describedby="plannedStoryPointsHelp" class="form-control panaxeo-focus"
@@ -114,7 +114,7 @@
                         </label>
 
                         <textarea class="form-control panaxeo-focus" id="work-estimation-textarea"
-                                  placeholder="80 90" rows="1">50 80</textarea>
+                                  placeholder="e.g. 80 90" rows="1"></textarea>
                         <button class="mt-2 btn btn-primary panaxeo-button stepper-prev">Previous</button>
                         <button class="mt-2 btn btn-primary panaxeo-button" id="work-estimation-calc">Next</button>
                     </div>
@@ -125,15 +125,14 @@
                                 <label for="plannedStoryPoints">Known (planned) story points</label>
                                 <input aria-describedby="plannedStoryPointsHelp" class="form-control panaxeo-focus"
                                        id="plannedStoryPoints"
-                                       placeholder="e.g. 120" type="number"
-                                       value="2">
+                                       placeholder="e.g. 120" type="number">
                                 <small class="form-text text-muted" id="plannedStoryPointsHelp">Sum the story points of
                                     all known PBIs planned.</small>
                             </div>
                             <div class="form-group mt-2">
                                 <label for="sprintLength">Sprint Length (calendar days)</label>
                                 <input class="form-control panaxeo-focus" id="sprintLength" placeholder="e.g. 5"
-                                       type="number" value="2">
+                                       type="number">
                             </div>
                             <div class="form-group mt-2">
                                 <label for="sprintStart">Sprint start</label>s

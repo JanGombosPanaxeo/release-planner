@@ -75,14 +75,16 @@ const setupDocument = () => {
             alert(errorObj.errorMessage);
             return;
         }
+        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateFormatter = new Intl.DateTimeFormat('en-US', dateOptions);
         timeline.roadmap([
             {
                 //empty on purpose
             }, {
-                date: `${dateMin.getDate()}.${dateMin.getMonth()}.${dateMin.getFullYear()}`,
+                date: `${dateFormatter.format(dateMin)}`,
                 content: 'Won’t finish'
             }, {
-                date: `${dateMax.getDate()}.${dateMax.getMonth()}.${dateMax.getFullYear()}`,
+                date: `${dateFormatter.format(dateMax)}`,
                 content: 'Will finish',
             }, {
                 //empty on purpose

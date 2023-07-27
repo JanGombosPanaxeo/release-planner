@@ -1,9 +1,9 @@
 import {addDaysToDate, isValidDateInFuture} from "./utils.js";
 
 const providedValues = {
-    velocities: [1, 2, 3, 4, 5],
+    velocities: [],
     teamCapacity: [],
-    workEstimation: [50, 80]
+    workEstimation: []
 }
 
 export const errorObj = {
@@ -45,7 +45,7 @@ const parseInputToIntArray = (strInput) => {
             return;
         }
     }
-    return inputArray;
+    return parsedArray;
 }
 
 const parseTextareaRows = (strInput) => {
@@ -111,20 +111,20 @@ export const parseWorkEstimationPart = (strInput) => {
 
 export const ParseSprintDataPart = (sprintDataForm) => {
     resetErrorObj();
-    const plannedStoryPoints = sprintDataForm.find('#plannedStoryPoints').val();
-    const sprintLength = sprintDataForm.find('#sprintLength').val();
+    const plannedStoryPoints = parseInt(sprintDataForm.find('#plannedStoryPoints').val(), 10);
+    const sprintLength = parseInt(sprintDataForm.find('#sprintLength').val(), 10);
     const sprintStart = sprintDataForm.find('#sprintStart').val();
-    if (plannedStoryPoints < 1) {
+    if (isNaN(plannedStoryPoints) || plannedStoryPoints < 1) {
         setError("You need to plan at least 1 story point for your next sprint");
         return;
-    } else if (sprintLength < 1 || sprintLength > 999) {
+    } else if (isNaN(sprintLength) || sprintLength < 1 || sprintLength > 999) {
         setError("Sprint length must be an integer from interval [1,999]");
         return;
     } else if (!isValidDateInFuture(sprintStart)) {
         setError("Sprint start must be an valid date in the future (including today)");
         return;
     }
-    return {plannedStoryPoints, sprintLength, sprintStart};
+    return {plannedStoryPoints, sprintLength, sprintStart: new Date(sprintStart)};
 }
 
 export const calcVelocities = (strInput, includeKnownCapacities) => {
@@ -136,9 +136,8 @@ export const calcVelocities = (strInput, includeKnownCapacities) => {
 export const calcWorkEstimation = (strInput) => {
     const workEstimation = parseWorkEstimationPart(strInput);
     if (errorObj.errorHasOccurred) return;
-    //Divide work estimation by 10 as provided values are percentages in range 1-100
-    workEstimation.forEach(workEst => workEst / 10);
-    providedValues.workEstimation = workEstimation;
+    //Divide work estimation by 100 as provided values are percentages in range 1-100
+    providedValues.workEstimation = workEstimation.map(workEst => workEst / 100);
 
 }
 
@@ -152,7 +151,7 @@ export const forecast = (sprintDataForm) => {
 
     //Calculate <Vmin, Vmax>
     let removeHighest = true;
-    velocities.sort();
+    velocities.sort((a, b) => a - b);
     while (velocities.length > 6) {
         if (removeHighest) velocities.pop();
         else velocities.shift();
@@ -162,10 +161,10 @@ export const forecast = (sprintDataForm) => {
     Vmax = velocities[velocities.length - 1]
 
     //Calculate duration range
-    let [SPmin, SPmax] = [plannedStoryPoints / Emin, plannedStoryPoints / Emax];
-    sprintsMin = SPmin / Vmax;
-    sprintsMax = SPmax / Vmin;
-    const dateMin = addDaysToDate(new Date(sprintStart), Math.round(sprintsMin * sprintLength));
-    const dateMax = addDaysToDate(new Date(sprintStart), Math.round(sprintsMax * sprintLength));
+    let [SPmin, SPmax] = [Math.round(plannedStoryPoints / Emax), Math.round(plannedStoryPoints / Emin)];
+    sprintsMin = (SPmin / Vmax).toFixed(2);
+    sprintsMax = (SPmax / Vmin).toFixed(2);
+    const dateMin = addDaysToDate(sprintStart, Math.round(sprintsMin * sprintLength));
+    const dateMax = addDaysToDate(sprintStart, Math.round(sprintsMax * sprintLength));
     return {dateMin, dateMax};
 }
