@@ -10,5 +10,6 @@
   "license": "ISC",
   "devDependencies": {
     "qunit": "^2.19.4"
-  }
+  },
+  "type": "module"
 }

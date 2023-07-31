@@ -4,8 +4,9 @@ import {
     errorObj,
     parseWorkEstimationPart,
     forecast,
-    ParseSprintDataPart, parseVelocitiesPart, calcWorkEstimation, resetErrorObj, resetProvidedValues
+    parseSprintDataPart, parseVelocitiesPart, calcWorkEstimation, resetErrorObj, resetProvidedValues
 } from "./calculations.js";
+import {safeParseToInt} from "./utils.js";
 
 const setupDocument = () => {
     const stepper = new Stepper(document.querySelector('.bs-stepper'));
@@ -16,6 +17,7 @@ const setupDocument = () => {
     const knownCapacitiesCheckbox = $("#known-capacities-checkbox");
     const resetTimelineButton = $("#reset-timeline");
     const timeline = $('#timeline');
+    const newTeamCapacityInput = $("#new-team-capacity-input");
 
     resetTimelineButton.click((_) => {
         velocitiesForm.trigger('reset');
@@ -53,7 +55,8 @@ const setupDocument = () => {
 
     $("#velocities-calc").click(function () {
         const input = velocitiesTextarea.val();
-        calcVelocities(input, knownCapacitiesCheckbox.is(':checked'));
+        const newTeamCapacityValue = knownCapacitiesCheckbox.is(':checked') ? newTeamCapacityInput.val() : null;
+        calcVelocities(input, newTeamCapacityValue);
         if (errorObj.errorHasOccurred) {
             alert(errorObj.errorMessage);
             return;
@@ -72,7 +75,10 @@ const setupDocument = () => {
     });
 
     $("#forecast").click(function () {
-        const {dateMin, dateMax} = forecast(sprintDataForm) || {};
+        const plannedStoryPoints = safeParseToInt(sprintDataForm.find('#plannedStoryPoints').val());
+        const sprintLength = safeParseToInt(sprintDataForm.find('#sprintLength').val());
+        const sprintStart = sprintDataForm.find('#sprintStart').val();
+        const {dateMin, dateMax} = forecast(plannedStoryPoints, sprintLength, sprintStart) || {};
         if (errorObj.errorHasOccurred) {
             alert(errorObj.errorMessage);
             return;
@@ -103,7 +109,8 @@ const setupDocument = () => {
     });
 
     const updateVelocitiesPart = () => {
-        parseVelocitiesPart(velocitiesTextarea.val(), knownCapacitiesCheckbox.is(':checked'));
+        const newTeamCapacityValue = knownCapacitiesCheckbox.is(':checked') ? newTeamCapacityInput.val() : null;
+        parseVelocitiesPart(velocitiesTextarea.val(), newTeamCapacityValue);
         refreshForm();
     }
 
@@ -113,7 +120,10 @@ const setupDocument = () => {
     }
 
     const updateSprintDataPart = () => {
-        ParseSprintDataPart(sprintDataForm);
+        const plannedStoryPoints = safeParseToInt(sprintDataForm.find('#plannedStoryPoints').val());
+        const sprintLength = safeParseToInt(sprintDataForm.find('#sprintLength').val());
+        const sprintStart = sprintDataForm.find('#sprintStart').val();
+        parseSprintDataPart(plannedStoryPoints, sprintLength, sprintStart);
         refreshForm();
     }
 

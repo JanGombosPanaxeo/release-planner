@@ -1,8 +1,7 @@
-import {addDaysToDate, isValidDateInFuture} from "./utils.js";
+import {addDaysToDate, isValidDateInFuture, safeParseToInt} from "./utils.js";
 
-const providedValues = {
+export const providedValues = {
     velocities: [],
-    teamCapacity: [],
     workEstimation: []
 }
 
@@ -13,7 +12,6 @@ export const errorObj = {
 
 export const resetProvidedValues = () => {
     providedValues.velocities = [];
-    providedValues.teamCapacity = [];
     providedValues.workEstimation = [];
 }
 
@@ -34,32 +32,31 @@ export function refreshForm() {
     } else $("#warning-data-fmt").hide();
 }
 
-const parseInputToIntArray = (strInput) => {
+export const parseInputToIntArray = (strInput) => {
     resetErrorObj();
     let inputArray = strInput.split(/\s|,\s*/);// Split by comma or space
     inputArray = inputArray.filter(word => word !== '');
-    const parsedArray = inputArray.map(element => parseInt(element, 10));
+    const parsedArray = inputArray.map(element => safeParseToInt(element));
     for (const [index, val] of parsedArray.entries()) {
         if (isNaN(val)) {
-            setError('Unable to parse value at position ' + (index + 1) + ' :(')
+            setError('Unable to parse value at position ' + (index + 1) + ' :(');
             return;
         }
     }
     return parsedArray;
 }
 
-const parseTextareaRows = (strInput) => {
+export const parseTextareaRows = (strInput) => {
     resetErrorObj();
     const inputText = strInput.trim();
     const rows = inputText.split("\n");
     const parsedValues = [];
 
     for (const [index, row] of rows.entries()) {
-        const values = row.trim().split(/\s|,\s*/);
+        const values = row.trim().split(/\s|,\s*/).filter(word => word !== '');
         if (values.length === 2) {
-            const num1 = parseInt(values[0], 10);
-            const num2 = parseInt(values[1], 10);
-
+            const num1 = safeParseToInt(values[0]);
+            const num2 = safeParseToInt(values[1]);
             // Check if both values are valid integers
             if (!isNaN(num1) && !isNaN(num2)) {
                 parsedValues.push([num1, num2]); // Store the parsed integers as a pair
@@ -75,9 +72,8 @@ const parseTextareaRows = (strInput) => {
     return parsedValues;
 }
 
-export const parseVelocitiesPart = (strInput, includeKnownCapacities) => {
-    const values = includeKnownCapacities ? parseTextareaRows(strInput) : parseInputToIntArray(strInput);
-    const newTeamCapacityInput = $("#new-team-capacity-input");
+export const parseVelocitiesPart = (strInput, newTeamCapacityValue) => {
+    const values = newTeamCapacityValue ? parseTextareaRows(strInput) : parseInputToIntArray(strInput);
     if (errorObj.errorHasOccurred) {
         return;
     }
@@ -87,11 +83,11 @@ export const parseVelocitiesPart = (strInput, includeKnownCapacities) => {
     } else if (values.length > 1000) {
         setError("Maximum number of sprints is 1000");
         return;
-    } else if (includeKnownCapacities && newTeamCapacityInput.val() < 1) {
+    } else if (newTeamCapacityValue && (isNaN(newTeamCapacityValue) || newTeamCapacityValue < 1)) {
         setError("New team capacity value must be an positive integer");
         return;
     }
-    return includeKnownCapacities ? values.map(tuple => (tuple[0] / tuple[1]) * newTeamCapacityInput.val()) : values;
+    return newTeamCapacityValue ? values.map(tuple => +((tuple[0] / tuple[1]) * newTeamCapacityValue).toFixed(2)) : values;
 }
 export const parseWorkEstimationPart = (strInput) => {
     const intValues = parseInputToIntArray(strInput);
@@ -109,11 +105,11 @@ export const parseWorkEstimationPart = (strInput) => {
     return intValues;
 }
 
-export const ParseSprintDataPart = (sprintDataForm) => {
+export const parseSprintDataPart = (plannedStoryPointsValue, sprintLengthValue, sprintStartValue) => {
     resetErrorObj();
-    const plannedStoryPoints = parseInt(sprintDataForm.find('#plannedStoryPoints').val(), 10);
-    const sprintLength = parseInt(sprintDataForm.find('#sprintLength').val(), 10);
-    const sprintStart = sprintDataForm.find('#sprintStart').val();
+    const plannedStoryPoints = safeParseToInt(plannedStoryPointsValue);
+    const sprintLength = safeParseToInt(sprintLengthValue);
+    const sprintStart = sprintStartValue
     if (isNaN(plannedStoryPoints) || plannedStoryPoints < 1) {
         setError("You need to plan at least 1 story point for your next sprint");
         return;
@@ -127,8 +123,8 @@ export const ParseSprintDataPart = (sprintDataForm) => {
     return {plannedStoryPoints, sprintLength, sprintStart: new Date(sprintStart)};
 }
 
-export const calcVelocities = (strInput, includeKnownCapacities) => {
-    const velocities = parseVelocitiesPart(strInput, includeKnownCapacities);
+export const calcVelocities = (strInput, newTeamCapacityValue) => {
+    const velocities = parseVelocitiesPart(strInput, newTeamCapacityValue);
     if (errorObj.errorHasOccurred) return;
     providedValues.velocities = velocities;
 }
@@ -141,8 +137,12 @@ export const calcWorkEstimation = (strInput) => {
 
 }
 
-export const forecast = (sprintDataForm) => {
-    const {plannedStoryPoints, sprintLength, sprintStart} = ParseSprintDataPart(sprintDataForm) || {};
+export const forecast = (plannedStoryPointsValue, sprintLengthValue, sprintStartValue) => {
+    const {
+        plannedStoryPoints,
+        sprintLength,
+        sprintStart
+    } = parseSprintDataPart(plannedStoryPointsValue, sprintLengthValue, sprintStartValue) || {};
     if (errorObj.errorHasOccurred) return;
     let velocities = [...providedValues.velocities];
     let Vmin, Vmax;
@@ -162,8 +162,8 @@ export const forecast = (sprintDataForm) => {
 
     //Calculate duration range
     let [SPmin, SPmax] = [Math.round(plannedStoryPoints / Emax), Math.round(plannedStoryPoints / Emin)];
-    sprintsMin = (SPmin / Vmax).toFixed(2);
-    sprintsMax = (SPmax / Vmin).toFixed(2);
+    sprintsMin = Math.ceil(SPmin / Vmax);
+    sprintsMax = Math.ceil(SPmax / Vmin);
     const dateMin = addDaysToDate(sprintStart, Math.round(sprintsMin * sprintLength));
     const dateMax = addDaysToDate(sprintStart, Math.round(sprintsMax * sprintLength));
     return {dateMin, dateMax};

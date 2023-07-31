@@ -13,3 +13,10 @@ export function addDaysToDate(date, daysToAdd) {
     resultDate.setDate(resultDate.getDate() + daysToAdd);
     return resultDate;
 }
+
+export function safeParseToInt(value){
+    if(isNaN(value)){
+        return NaN;
+    }
+    return parseInt(value,10);
+}
