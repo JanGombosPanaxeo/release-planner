@@ -72,8 +72,9 @@ export const parseTextareaRows = (strInput) => {
     return parsedValues;
 }
 
-export const parseVelocitiesPart = (strInput, newTeamCapacityValue) => {
-    const values = newTeamCapacityValue ? parseTextareaRows(strInput) : parseInputToIntArray(strInput);
+export const parseVelocitiesPart = (strInput, newTeamCapacityValueChecked, newTeamCapacityValue) => {
+    const values = newTeamCapacityValueChecked ? parseTextareaRows(strInput) : parseInputToIntArray(strInput);
+    console.log(values);
     if (errorObj.errorHasOccurred) {
         return;
     }
@@ -83,7 +84,7 @@ export const parseVelocitiesPart = (strInput, newTeamCapacityValue) => {
     } else if (values.length > 1000) {
         setError("Maximum number of sprints is 1000");
         return;
-    } else if (newTeamCapacityValue && (isNaN(newTeamCapacityValue) || newTeamCapacityValue < 1)) {
+    } else if (newTeamCapacityValueChecked && (isNaN(newTeamCapacityValue) || newTeamCapacityValue < 1)) {
         setError("New team capacity value must be an positive integer");
         return;
     }
@@ -123,8 +124,8 @@ export const parseSprintDataPart = (plannedStoryPointsValue, sprintLengthValue, 
     return {plannedStoryPoints, sprintLength, sprintStart: new Date(sprintStart)};
 }
 
-export const calcVelocities = (strInput, newTeamCapacityValue) => {
-    const velocities = parseVelocitiesPart(strInput, newTeamCapacityValue);
+export const calcVelocities = (strInput, newTeamCapacityValueChecked, newTeamCapacityValue) => {
+    const velocities = parseVelocitiesPart(strInput, newTeamCapacityValueChecked, newTeamCapacityValue);
     if (errorObj.errorHasOccurred) return;
     providedValues.velocities = velocities;
 }

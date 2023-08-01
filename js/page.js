@@ -56,7 +56,7 @@ const setupDocument = () => {
     $("#velocities-calc").click(function () {
         const input = velocitiesTextarea.val();
         const newTeamCapacityValue = knownCapacitiesCheckbox.is(':checked') ? newTeamCapacityInput.val() : null;
-        calcVelocities(input, newTeamCapacityValue);
+        calcVelocities(input, knownCapacitiesCheckbox.is(':checked'), newTeamCapacityValue);
         if (errorObj.errorHasOccurred) {
             alert(errorObj.errorMessage);
             return;
@@ -110,7 +110,7 @@ const setupDocument = () => {
 
     const updateVelocitiesPart = () => {
         const newTeamCapacityValue = knownCapacitiesCheckbox.is(':checked') ? newTeamCapacityInput.val() : null;
-        parseVelocitiesPart(velocitiesTextarea.val(), newTeamCapacityValue);
+        parseVelocitiesPart(velocitiesTextarea.val(), knownCapacitiesCheckbox.is(':checked'), newTeamCapacityValue);
         refreshForm();
     }
 
